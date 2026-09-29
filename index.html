@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F7F6F9">
+  <title>Цифровой психоанализ</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Slab:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: #F7F6F9;
+      min-height: 100%;
+      overscroll-behavior-y: none;
+    }
+
+    body {
+      background: #F7F6F9;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: calc(20px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
+      margin: 0;
+      -webkit-tap-highlight-color: transparent;
+      color: #1c1c1c;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .cpa-final {
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 4px 6px 12px;
+      background: transparent;
+      border-radius: 0;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      text-align: center;
+      color: #1c1c1c;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ЕДИНЫЙ СТИЛЬ ВСЕХ БЛОКОВ
+       Радиус: 12px · Тень: одна и та же · Padding: 22px 20px
+       ═══════════════════════════════════════════════════ */
+    .cpa-final .input-row,
+    .cpa-final .matrix-wrap,
+    .cpa-final .descriptions .item,
+    .cpa-final .partial-note,
+    .cpa-final .consultations .consult-card,
+    .cpa-final .faq .item {
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(31, 29, 43, 0.06), 0 1px 2px rgba(31, 29, 43, 0.03);
+    }
+
+    /* ——— Главный заголовок (заголовок блока) ——— */
+    .cpa-final .app-title {
+      text-align: left;
+      margin: 0 0 22px;
+      padding: 0 6px;
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: .6px;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+    .cpa-final .app-title-line {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+    .cpa-final .app-title-line:first-child {
+      color: #562F89;
+      margin-bottom: 2px;
+    }
+
+    /* ——— Строка ввода ——— */
+    .cpa-final .input-row {
+      display: flex;
+      width: 100%;
+      margin: 0 auto 24px;
+      border: none;
+      overflow: hidden;
+    }
+    .cpa-final .date-input {
+      flex: 1;
+      padding: 18px 14px;
+      border: none;
+      border-right: 1px solid #EFEDF4;
+      border-radius: 0;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      background: #FFFFFF;
+      color: #1c1c1c;
+      font-family: 'Roboto Slab', Georgia, serif;
+      letter-spacing: .6px;
+      line-height: 1.4;
+      min-width: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+    .cpa-final .date-input::placeholder {
+      color: #B4B1C0;
+      letter-spacing: .6px;
+      font-weight: 500;
+    }
+    .cpa-final .date-input:focus {
+      outline: none;
+      box-shadow: none;
+      background: #FBFAFD;
+    }
+    .cpa-final .btn {
+      flex: 1;
+      padding: 18px 14px;
+      border: none;
+      background: #1F1D2B;
+      color: #FFFFFF;
+      border-radius: 0;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: 'Roboto Slab', Georgia, serif;
+      cursor: pointer;
+      letter-spacing: .5px;
+      line-height: 1.4;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .2s ease;
+    }
+    .cpa-final .btn:hover,
+    .cpa-final .btn:focus {
+      background: #2C293E;
+      border-color: transparent;
+      box-shadow: none;
+      outline: none;
+    }
+    .cpa-final .btn:active { background: #14121F; transform: none; }
+
+    /* ——— Матрица ——— */
+    .cpa-final .matrix-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .cpa-final .matrix {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      background: #FFFFFF;
+      border: none;
+    }
+    .cpa-final .matrix td {
+      border: none;
+      border-right: 1px solid #F1EFF5;
+      border-bottom: 1px solid #F1EFF5;
+      padding: 14px 6px;
+      text-align: center;
+      vertical-align: middle;
+      background: #FFFFFF;
+      min-width: 44px;
+    }
+    .cpa-final .matrix td:last-child { border-right: none; }
+    .cpa-final .matrix tr:last-child td { border-bottom: none; }
+    .cpa-final .matrix .extra-cell {
+      background: #FAF9FC;
+      padding: 16px 12px;
+      border-bottom: 1px solid #EFEDF4;
+    }
+    .cpa-final .matrix .digit {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1c1c1c;
+      display: block;
+      line-height: 1.35;
+      letter-spacing: .6px;
+      word-break: break-all;
+    }
+    .cpa-final .matrix .extra-cell .digit {
+      color: #562F89;
+      letter-spacing: 1px;
+    }
+    .cpa-final .matrix .label {
+      font-family: 'Roboto', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: #8B8896;
+      display: block;
+      margin-top: 4px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .cpa-final .matrix td.empty .digit {
+      color: #C9C6D3;
+      opacity: 1;
+      font-weight: 500;
+    }
+
+    /* ——— Трактовки ——— */
+    .cpa-final .descriptions {
+      margin-top: 26px;
+      text-align: left;
+      display: none;
+    }
+    .cpa-final .descriptions.show { display: block; animation: fadeInUp .4s ease; }
+    .cpa-final .descriptions .item {
+      margin-bottom: 14px;
+      padding: 22px 20px;
+      text-align: left;
+    }
+    .cpa-final .descriptions .item:last-child { margin-bottom: 0; }
+    .cpa-final .descriptions .item .combo-digits {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1c1c1c;
+      margin: 0 0 12px 0;
+      letter-spacing: .4px;
+      line-height: 1.4;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #F1EFF5;
+    }
+
+    /* ——— Основной текст ——— */
+    .cpa-final .descriptions .item .short-desc,
+    .cpa-final .descriptions .item p,
+    .cpa-final .partial-note p,
+    .cpa-final .consultations .consult-short,
+    .cpa-final .consultations .consult-body p,
+    .cpa-final .consultations .consult-body ul li,
+    .cpa-final .consultations .consult-body .stage-title,
+    .cpa-final .consultations .consult-note,
+    .cpa-final .faq .item .faq-body p {
+      font-family: 'Roboto', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: #323232;
+      line-height: 1.65;
+      letter-spacing: .1px;
+    }
+    .cpa-final .descriptions .item p { margin: 0 0 12px 0; }
+    .cpa-final .descriptions .item p:last-child { margin-bottom: 0; }
+    .cpa-final .descriptions .item .short-desc { margin: 0 0 12px 0; }
+
+    /* ——— Жирные акценты (внутренние выделения) ——— */
+    .cpa-final .descriptions .item p strong,
+    .cpa-final .partial-note p strong,
+    .cpa-final .consultations .consult-body p strong,
+    .cpa-final .consultations .consult-body ul li strong,
+    .cpa-final .consultations .consult-note strong,
+    .cpa-final .faq .item .faq-body p strong {
+      color: #1c1c1c;
+      font-weight: 700;
+      font-family: inherit;
+    }
+
+    /* ——— Кнопки «Подробнее» ——— */
+    .cpa-final .descriptions .item .toggle-btn {
+      background: none;
+      border: none;
+      padding: 4px 0;
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #562F89;
+      cursor: pointer;
+      display: inline-block;
+      margin: 0;
+      transition: color .2s ease;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: .4px;
+    }
+    .cpa-final .descriptions .item .toggle-btn:hover { color: #3F2266; }
+    .cpa-final .descriptions .item .toggle-btn:active { transform: none; outline: none; }
+
+    .cpa-final .descriptions .item .full-desc {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #F1EFF5;
+    }
+    .cpa-final .descriptions .item .full-desc.open {
+      display: block;
+      animation: fadeInUp .3s ease;
+    }
+
+    /* ——— Блок «Частичный анализ» ——— */
+    .cpa-final .partial-note {
+      margin-top: 14px;
+      padding: 22px 20px;
+      text-align: left;
+      display: none;
+    }
+    .cpa-final .partial-note.show { display: block; animation: fadeInUp .4s ease; }
+    .cpa-final .partial-note p { margin: 0 0 12px 0; }
+    .cpa-final .partial-note p:last-child { margin-bottom: 0; }
+    .cpa-final .partial-note p.highlight-purple {
+      color: #562F89;
+      font-weight: 400;
+    }
+
+    /* ——— Консультации ——— */
+    .cpa-final .consultations {
+      margin-top: 26px;
+      text-align: left;
+    }
+    /* Заголовки блоков секций */
+    .cpa-final .consultations .section-title,
+    .cpa-final .faq-heading {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: .6px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      text-align: left;
+      margin: 0 0 16px 6px;
+    }
+    .cpa-final .faq-heading { margin: 30px 0 16px 6px; }
+    .cpa-final .consultations .section-title span,
+    .cpa-final .faq-heading span { color: #562F89; }
+
+    .cpa-final .consultations .consult-card {
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .cpa-final .consultations .consult-card:last-child { margin-bottom: 0; }
+
+    .cpa-final .consultations .consult-head {
+      padding: 22px 20px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .cpa-final .consultations .consult-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    /* Внутренний заголовок карточки */
+    .cpa-final .consultations .consult-name {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1c1c1c;
+      letter-spacing: .4px;
+      line-height: 1.4;
+      flex: 1;
+      min-width: 0;
+    }
+    .cpa-final .consultations .consult-price {
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #562F89;
+      white-space: nowrap;
+      letter-spacing: .4px;
+      flex-shrink: 0;
+    }
+    .cpa-final .consultations .consult-short { margin: 0 0 12px 0; }
+    .cpa-final .consultations .consult-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #562F89;
+      letter-spacing: .4px;
+    }
+    .cpa-final .consultations .consult-toggle .arrow {
+      display: inline-block;
+      font-size: 11px;
+      transition: transform .3s ease;
+    }
+    .cpa-final .consultations .consult-card.open .consult-toggle .arrow {
+      transform: rotate(180deg);
+    }
+    .cpa-final .consultations .consult-body {
+      display: none;
+      padding: 0 20px 22px;
+      border-top: 1px solid #F1EFF5;
+    }
+    .cpa-final .consultations .consult-card.open .consult-body {
+      display: block;
+      animation: fadeInUp .35s ease;
+    }
+    .cpa-final .consultations .consult-body p { margin: 14px 0 0 0; }
+    .cpa-final .consultations .consult-body p:first-child { margin-top: 16px; }
+    /* Заголовки этапов — внутренние заголовки */
+    .cpa-final .consultations .consult-body .stage-title {
+      font-weight: 700;
+      color: #1c1c1c;
+      margin: 18px 0 6px 0;
+    }
+    .cpa-final .consultations .consult-body .stage-title:first-child { margin-top: 16px; }
+    .cpa-final .consultations .consult-body ul {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0 0;
+    }
+    .cpa-final .consultations .consult-body ul li {
+      margin: 0 0 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .cpa-final .consultations .consult-body ul li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #323232;
+      font-family: inherit;
+      font-weight: 400;
+      line-height: 1.65;
+    }
+    .cpa-final .consultations .consult-body ul li:last-child { margin-bottom: 0; }
+    .cpa-final .consultations .consult-body .highlight-purple {
+      color: #562F89;
+      font-weight: 500;
+    }
+    .cpa-final .consultations .consult-note {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #F1EFF5;
+    }
+
+    /* ——— FAQ ——— */
+    .cpa-final .faq { margin-top: 0; text-align: left; }
+    .cpa-final .faq .item {
+      margin-bottom: 14px;
+      text-align: left;
+      overflow: hidden;
+    }
+    .cpa-final .faq .item:last-child { margin-bottom: 0; }
+    /* Вопрос — внутренний заголовок */
+    .cpa-final .faq .item .faq-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 22px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1c1c1c;
+      letter-spacing: .4px;
+      line-height: 1.4;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cpa-final .faq .item .faq-head:hover,
+    .cpa-final .faq .item .faq-head:focus,
+    .cpa-final .faq .item .faq-head:active {
+      color: #1c1c1c;
+      outline: none;
+    }
+    .cpa-final .faq .item .faq-head .faq-q { flex: 1; min-width: 0; }
+    .cpa-final .faq .item .faq-head .faq-icon {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #F1EFF5;
+      color: #1c1c1c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Roboto Slab', Georgia, serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      transition: background .2s ease, color .2s ease, transform .2s ease;
+    }
+    .cpa-final .faq .item.open .faq-head .faq-icon {
+      background: #1c1c1c;
+      color: #FFFFFF;
+      transform: rotate(45deg);
+    }
+    .cpa-final .faq .item .faq-body {
+      display: none;
+      padding: 0 20px 22px;
+      border-top: 1px solid #F1EFF5;
+    }
+    .cpa-final .faq .item.open .faq-body {
+      display: block;
+      animation: fadeInUp .3s ease;
+    }
+    .cpa-final .faq .item .faq-body p { margin: 14px 0 0 0; }
+    .cpa-final .faq .item .faq-body p:first-child { margin-top: 16px; }
+    .cpa-final .faq .item .faq-body a {
+      color: #562F89;
+      text-decoration: none;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(86, 47, 137, 0.35);
+      transition: color .2s ease, border-color .2s ease;
+      word-break: break-word;
+    }
+    .cpa-final .faq .item .faq-body a:hover {
+      color: #3F2266;
+      border-bottom-color: #3F2266;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cpa-final .result { display: none; animation: fadeInUp .4s ease; }
+    .cpa-final .result.show { display: block; }
+
+    /* ——— Адаптивность ——— */
+    @media (max-width: 500px) {
+      .cpa-final { padding: 0 4px 8px; }
+      .cpa-final .app-title { margin-bottom: 20px; padding: 0 4px; }
+      .cpa-final .app-title-line,
+      .cpa-final .consultations .section-title,
+      .cpa-final .faq-heading { font-size: 20px; }
+      .cpa-final .date-input,
+      .cpa-final .btn { padding: 16px 12px; font-size: 16px; }
+      .cpa-final .matrix td { padding: 12px 4px; min-width: 32px; }
+      .cpa-final .matrix .digit { font-size: 16px; }
+      .cpa-final .matrix .label { font-size: 10px; }
+      .cpa-final .descriptions .item { padding: 20px 18px; }
+      .cpa-final .partial-note { padding: 20px 18px; }
+      .cpa-final .consultations .consult-head { padding: 20px 18px; }
+      .cpa-final .consultations .consult-body { padding: 0 18px 20px; }
+      .cpa-final .faq .item .faq-head { padding: 20px 18px; font-size: 16px; }
+      .cpa-final .faq .item .faq-body { padding: 0 18px 20px; }
+    }
+
+    @media (max-width: 380px) {
+      .cpa-final .app-title-line,
+      .cpa-final .consultations .section-title,
+      .cpa-final .faq-heading { font-size: 18px; }
+      .cpa-final .date-input,
+      .cpa-final .btn { padding: 14px 10px; font-size: 15px; }
+      .cpa-final .matrix td { padding: 10px 2px; min-width: 28px; }
+      .cpa-final .matrix .digit { font-size: 15px; }
+      .cpa-final .matrix .label { font-size: 9px; }
+      .cpa-final .descriptions .item { padding: 18px 16px; }
+      .cpa-final .partial-note { padding: 18px 16px; }
+      .cpa-final .consultations .consult-head { padding: 18px 16px; }
+      .cpa-final .consultations .consult-body { padding: 0 16px 18px; }
+      .cpa-final .faq .item .faq-head { padding: 18px 16px; font-size: 15px; }
+      .cpa-final .faq .item .faq-body { padding: 0 16px 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="cpa-final" id="app">
+  <div class="app-title">
+    <div class="app-title-line">ЦИФРОВАЯ</div>
+    <div class="app-title-line">ДИАГНОСТИКА ЛИЧНОСТИ</div>
+  </div>
+
+  <div class="input-row">
+    <input type="text" class="date-input" id="c-date" placeholder="ДД.ММ.ГГГГ" value="14.06.1992" maxlength="10">
+    <button class="btn" id="c-calc-btn">Рассчитать</button>
+  </div>
+
+  <div class="result" id="c-result">
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <tr>
+          <td class="extra-cell" colspan="3" id="c-extra">
+            <span class="digit" id="c-extra-digits">—</span>
+            <span class="label">Дополнительные числа</span>
+          </td>
+        </tr>
+        <tr>
+          <td id="c-1"><span class="digit">—</span><span class="label">Характер</span></td>
+          <td id="c-4"><span class="digit">—</span><span class="label">Здоровье</span></td>
+          <td id="c-7"><span class="digit">—</span><span class="label">Удача</span></td>
+        </tr>
+        <tr>
+          <td id="c-2"><span class="digit">—</span><span class="label">Энергия</span></td>
+          <td id="c-5"><span class="digit">—</span><span class="label">Логика</span></td>
+          <td id="c-8"><span class="digit">—</span><span class="label">Долг</span></td>
+        </tr>
+        <tr>
+          <td id="c-3"><span class="digit">—</span><span class="label">Интерес</span></td>
+          <td id="c-6"><span class="digit">—</span><span class="label">Труд</span></td>
+          <td id="c-9"><span class="digit">—</span><span class="label">Память</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="descriptions" id="c-descriptions">
+      <div class="item" id="c-ones-block">
+        <div class="combo-digits" id="c-ones-digits">—</div>
+        <div id="c-ones-text"></div>
+      </div>
+      <div class="item" id="c-twos-block">
+        <div class="combo-digits" id="c-twos-digits">—</div>
+        <div id="c-twos-text"></div>
+      </div>
+    </div>
+
+    <div class="partial-note" id="c-partial-note">
+      <p>Это краткий анализ двух ключевых позиций: характера и энергии. Это фундамент, с которого всё начинается.</p>
+      <p>Ответы на все вопросы хранятся в деталях!</p>
+      <p class="highlight-purple">Полный анализ психоматрицы с использованием дополнительных инструментов цифрового психоанализа – это то, что превращает цифры в конкретные инструкции.</p>
+    </div>
+  </div>
+
+  <div class="consultations" id="c-consultations">
+    <div class="section-title"><span>Форматы</span> консультаций</div>
+
+    <div class="consult-card" data-consult>
+      <div class="consult-head">
+        <div class="consult-top">
+          <div class="consult-name">Индивидуальная консультация</div>
+          <div class="consult-price">3.000 ₽</div>
+        </div>
+        <p class="consult-short">Анализ личности, позволяющий увидеть свои ресурсы и уязвимости, получить ответы на многие вопросы.</p>
+        <span class="consult-toggle">Подробнее <span class="arrow">▼</span></span>
+      </div>
+      <div class="consult-body">
+        <p>Эта консультация – не предсказание и не гадание. Это структурный математический анализ вашей даты рождения, который позволяет увидеть вашу природу: сильные стороны, уязвимости, внутренние конфликты и способы их гармонизации.</p>
+        <p>Вы получите не абстрактные описания, а конкретную карту вашей личности с пониманием, куда направлять усилия, а где лучше остановиться. Консультация строится поэтапно, от общего к частному, от базовых показателей к их динамике и взаимодействию.</p>
+
+        <div class="stage-title">Этап 1. Анализ психоматрицы.</div>
+        <p>Подробный разбор всех цифровых ячеек. Психоматрица – это таблица 3×3, в которую вносятся все цифры из вашей даты рождения и дополнительного расчёта. Каждая ячейка отвечает за конкретное качество.</p>
+
+        <div class="stage-title">Этап 2. Анализ всех линий психоматрицы.</div>
+        <p>Каждая линия (строка, столбец, диагональ) объединяет три цифры и даёт качество более высокого уровня. Мы разбираем их в двух проявлениях:</p>
+        <ul>
+          <li><strong>Как ресурс</strong> – где эта линия даёт вам силу, помогает достигать целей, строить отношения, зарабатывать.</li>
+          <li><strong>Как ловушка</strong> – где эта линия может привести к перегрузке, конфликтам, зацикленности.</li>
+        </ul>
+
+        <div class="stage-title">Этап 3. Переходы цифр – динамика вашей психоматрицы.</div>
+        <p>Психоматрица не статична. В зависимости от ваших решений, привычек и образа жизни цифры могут переходить друг в друга. Это ключевой механизм, который объясняет, почему люди с одинаковыми датами рождения живут по-разному.</p>
+
+        <div class="stage-title">Этап 4. Анализ типов мышления.</div>
+        <p>Это отдельный математический расчёт, который показывает, как вы мыслите в текущий период жизни и как будете мыслить в ближайшие годы. Мы определяем ваш базовый тип мышления и его изменения. Это позволяет понять:</p>
+        <ul>
+          <li>Когда вам лучше систематизировать и упорядочивать, а не придумывать новое.</li>
+          <li>Когда эффективнее копировать успешные модели, а не тратить силы на изобретение велосипеда.</li>
+          <li>Когда наступает время создавать собственные решения и не следовать шаблонам.</li>
+          <li>Когда приходит период поиска нового и отказа от привычного.</li>
+        </ul>
+        <p>Знание своего типа мышления в конкретный период жизни позволяет действовать в потоке, а не против своей природы. Вы перестаёте «топтаться на месте» и начинаете использовать свои мыслительные способности с максимальной эффективностью.</p>
+
+        <div class="stage-title">Дополнительные опции (по желанию).</div>
+        <p>В рамках консультации вы можете запросить дополнительные разборы:</p>
+        <ul>
+          <li><strong>Анализ даты ключевого события</strong> – запуск проекта, переезд, подписание договора, начало обучения. Я покажу, как эта дата соотносится с вашей психоматрицей и какие нюансы стоит учесть.</li>
+          <li><strong>Анализ эмоций по китайской схеме У-Син</strong> – глубокая диагностика вашего эмоционального состояния и его связи с органами.</li>
+          <li><strong>Подбор имени для новорождённого</strong> – расчёт имени, которое гармонично дополнит дату рождения ребёнка (требуется дата рождения малыша).</li>
+        </ul>
+
+        <div class="stage-title">Итог консультации.</div>
+        <p>Вы получите:</p>
+        <ul>
+          <li><strong>Аудиозапись разбора</strong> (60–90 минут) – я провожу вас через все этапы анализа последовательно, с подробными пояснениями и выводами. В аудиоформате нет спешки, я раскрываю каждый блок максимально глубоко, чтобы вы могли прочувствовать и осмыслить информацию.</li>
+          <li><strong>Возможность перейти к диалогу после прослушивания.</strong> Если у вас останутся вопросы, что-то будет непонятно или потребуется уточнение – мы созваниваемся в удобное для вас время или продолжаем разговор в переписке. Консультация не заканчивается на аудио – я остаюсь на связи, чтобы вы могли вернуться к сложным моментам и получить разъяснения.</li>
+        </ul>
+
+        <div class="consult-note">
+          <strong>Запись консультации остаётся у вас.</strong> Вы можете переслушивать её через месяц, через год или через несколько лет – и каждый раз находить новые смыслы. Психоматрица – это не одноразовый отчёт, а рабочий инструмент, который остаётся с вами. С изменением жизненных обстоятельств, возрастом и накопленным опытом одни и те же цифры начинают звучать иначе. Аудиоформат даёт вам возможность возвращаться к разбору в любой момент, когда вы чувствуете, что готовы услышать больше.
+        </div>
+      </div>
+    </div>
+
+    <div class="consult-card" data-consult>
+      <div class="consult-head">
+        <div class="consult-top">
+          <div class="consult-name">Консультация для пары</div>
+          <div class="consult-price">6.000 ₽</div>
+        </div>
+        <p class="consult-short">Анализ партнёров и их совместимости, чтобы понять, как они дополняют друг друга и где возникает напряжение.</p>
+        <span class="consult-toggle">Подробнее <span class="arrow">▼</span></span>
+      </div>
+      <div class="consult-body">
+        <p>Отношения – это не магия и не совпадение. Это взаимодействие двух уникальных личностей со своими сильными сторонами, уязвимостями и внутренними сценариями. Чтобы понять, почему возникают конфликты и как превратить напряжение в рост, нужно сначала разобраться в каждом из вас. Поэтому консультация для пары всегда начинается с индивидуального разбора.</p>
+
+        <div class="stage-title">Этап 1. Полный детальный анализ каждого партнёра.</div>
+        <ul>
+          <li>Подробный анализ психоматрицы – разбор всех цифровых ячеек.</li>
+          <li>Анализ всех линий и диагоналей – как ресурс и как ловушка.</li>
+          <li>Переходы цифр – динамика личности.</li>
+          <li>Анализ типов мышления с прогнозом на ближайшие годы.</li>
+        </ul>
+
+        <div class="stage-title">Этап 2. Анализ совместимости.</div>
+        <p>После того как я разобрал каждого из вас в отдельности, мы переходим к анализу пары как единой системы. Здесь я использую все методы цифрового психоанализа:</p>
+        <ul>
+          <li><strong>Совместимость по цифровым ячейкам</strong> – как ваши характеры, энергии и другие качества взаимодействуют друг с другом. Где возникает естественное дополнение, а где трение.</li>
+          <li><strong>Совместимость по линиям и диагоналям</strong> – целеустремлённость, семья, стабильность, самооценка, материальное обеспечение, талант, темперамент, духовность. Мы смотрим, совпадают ли ваши приоритеты или они находятся в противоречии.</li>
+          <li><strong>Совместимость по дополнительным числам</strong> – ваши цели и причины ваших действий. Вы увидите, идёте ли вы в одном направлении или ваши внутренние движущие силы работают на разные цели.</li>
+          <li><strong>Переходы в паре</strong> – как переходы одного партнёра влияют на состояние другого. Это особенно важно, потому что в паре переходы запускаются взаимно. Я покажу, где ваши «спусковые крючки» и как не провоцировать друг друга на деструктивные сценарии.</li>
+          <li><strong>Темперамент и духовность</strong> – анализ соотношения плотской и духовной диагоналей. Вы поймёте, что для вас важнее в близости: тело или душа, и совпадают ли ваши ожидания.</li>
+          <li><strong>Типы мышления в паре</strong> – как ваши мыслительные стратегии дополняют или конфликтуют друг с другом. Увидите, кто из вас чаще генерирует идеи, а кто – доводит их до реализации.</li>
+          <li><strong>Расчёт стабильности брака</strong> – бытовая и духовная стабильность в годах. Вы получите конкретные цифры: когда ожидать кризисов, как долго они длятся и как подготовиться, чтобы пройти их без разрушения союза. Это не приговор, а инструмент прогнозирования и профилактики.</li>
+        </ul>
+
+        <div class="stage-title">Итог консультации.</div>
+        <p>Вы получите:</p>
+        <ul>
+          <li><strong>Аудиозапись разбора</strong> (120–150 минут) – я последовательно провожу вас через все этапы: сначала разбор каждого партнёра, затем анализ совместимости. Всё структурировано, с пояснениями и выводами.</li>
+          <li><strong>Возможность перейти к диалогу после прослушивания.</strong> Если что-то осталось непонятным, вы задаёте вопросы – мы созваниваемся или продолжаем разговор в переписке. Консультация не ограничивается аудиоформатом.</li>
+        </ul>
+
+        <div class="consult-note">
+          <strong>Запись остаётся у вас.</strong> Вы можете возвращаться к ней через месяц, год или несколько лет. С изменением обстоятельств и возрастом одни и те же выводы начинают звучать иначе. Аудиоформат даёт вам возможность пересматривать и переосмысливать разбор в любой момент. Вы получите не вердикт «подходите / не подходите», а живую карту вашего союза. Вы увидите, где вы дополняете друг друга, где создаёте напряжение и как превратить точки трения в точки роста. Это знание позволяет перестать переделывать партнёра и начать строить отношения на реальном, а не придуманном фундаменте.
+        </div>
+      </div>
+    </div>
+
+    <div class="consult-card" data-consult>
+      <div class="consult-head">
+        <div class="consult-top">
+          <div class="consult-name">Консультация для семьи</div>
+          <div class="consult-price">10.000 ₽</div>
+        </div>
+        <p class="consult-short">Детальный анализ всех членов семьи как единой системы, где каждый влияет на каждого.</p>
+        <span class="consult-toggle">Подробнее <span class="arrow">▼</span></span>
+      </div>
+      <div class="consult-body">
+        <p>Семья – это не сумма отдельных людей. Это единая система, где каждый влияет на каждого. Чтобы понять, как наладить взаимодействие и помочь ребёнку расти без внутреннего сопротивления, сначала нужно разобраться в природе каждого члена семьи – их сильных сторонах, уязвимостях и внутренних сценариях. Поэтому консультация для семьи строится поэтапно: сначала индивидуальный разбор родителей, затем, по запросу, анализ совместимости, и завершающий этап – полный детальный анализ ребёнка с определением его направления.</p>
+
+        <div class="stage-title">Этап 1. Полный детальный анализ каждого родителя.</div>
+        <p>Консультация начинается с индивидуального разбора отца и матери. Каждый из них получает полноценный анализ личности – такой же, как в тарифе «Индивидуальная консультация».</p>
+
+        <div class="stage-title">Этап 2. Анализ совместимости супругов (по желанию).</div>
+        <p>Если в запросе семьи фигурирует вопрос совместимости – я подключаю анализ пары, описанный в тарифе «Консультация для пары».</p>
+
+        <div class="stage-title">Этап 3. Полный детальный анализ ребёнка.</div>
+        <p>Основной смысл этой консультации – помочь вам понять вашего ребёнка и выбрать правильное направление для его развития. Для каждого ребёнка я провожу полный анализ личности, аналогичный тарифу «Индивидуальная консультация». Это значит, что ребёнок получает такой же детальный разбор, как и взрослый: психоматрица, линии, переходы, тип мышления – всё это рассматривается в полном объёме, с учётом возрастных особенностей и природных задатков.</p>
+        <p>Но главная задача этого этапа – не просто описать ребёнка, а дать практические ответы на ключевые вопросы:</p>
+        <ul>
+          <li>Куда направить его энергию и способности?</li>
+          <li>В какой сфере он сможет раскрыться максимально полно?</li>
+          <li>Какая деятельность ему подходит – гуманитарная, техническая, спортивная, мастерство, теоретическая работа?</li>
+          <li>Как с ним общаться, чтобы не ломать его волю и не создавать внутреннего сопротивления?</li>
+          <li>Как развивать его сильные стороны и компенсировать слабые без давления и насилия?</li>
+        </ul>
+        <p>Вы получите понимание природы вашего ребёнка – не как набор абстрактных характеристик, а как конкретный план действий. Это знание позволяет выбирать кружки, секции, школы, подходы в общении и воспитании, исходя из его реальных задатков, а не из того, что «принято» или «модно».</p>
+
+        <div class="stage-title">Итог консультации для семьи.</div>
+        <p>Вы получите:</p>
+        <ul>
+          <li><strong>Аудиозапись разбора</strong> (время зависит от количества членов семьи) – я провожу вас через все этапы последовательно: родители по отдельности, совместимость (если нужно), затем детальный разбор каждого ребёнка. Всё структурировано, с пояснениями и конкретными рекомендациями.</li>
+          <li><strong>Возможность перейти к диалогу после прослушивания.</strong> Если что-то осталось непонятным или появились новые вопросы – мы созваниваемся или продолжаем разговор в переписке.</li>
+        </ul>
+
+        <div class="consult-note">
+          <strong>Запись остаётся у вас.</strong> Вы можете возвращаться к ней через год, через несколько лет. Дети растут, меняются обстоятельства, и одна и та же консультация начинает звучать иначе, открывая новые смыслы. Вы получите не просто разбор каждого члена семьи, а понимание семьи как живой системы. Главное – вы узнаете, куда направить ребёнка, чтобы он рос в согласии со своей природой, а не вопреки ей. Это знание спасёт вас от главной ошибки родителей – попыток сделать из ребёнка «успешного» по меркам общества вместо того, чтобы помочь ему стать собой. Семья – это не идеал, к которому нужно стремиться. Это живой организм, который можно научиться понимать и поддерживать.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="faq-heading"><span>Вопросы</span> и ответы</div>
+
+  <div class="faq" id="c-faq">
+
+    <div class="item">
+      <button class="faq-head" type="button">
+        <span class="faq-q">В каком формате вы проводите консультации?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-body">
+        <p>Я даю ответ в формате аудиосообщений (60–150 минут).</p>
+        <p>Это позволяет мне дать максимально глубокий разбор, не ограничивая себя по времени.</p>
+        <p>Вы получаете запись, которую можно переслушивать в любое время. Вы слушаете в удобном темпе, делаете паузы и возвращаетесь к важным моментам.</p>
+        <p><strong>Важно:</strong> после прослушивания моих сообщений у вас всё равно есть возможность перейти к диалогу по звонку или в переписке.</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <button class="faq-head" type="button">
+        <span class="faq-q">Что требуется для проведения консультации?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-body">
+        <p>Для того чтобы разбор получился максимально полезным и глубоким, мне необходим «фундамент».</p>
+        <p>— Пришлите дату рождения в формате дд/мм/гггг.</p>
+        <p>— Пришлите свой основной вопрос или проблему, которая волнует вас на данный момент больше всего.</p>
+        <p>— Напишите краткую информацию о себе. Кем вы работаете, в каких отношениях находитесь, что для вас сейчас важно. Это поможет мне лучше понять контекст и дать более точные рекомендации.</p>
+        <p>Свяжитесь со мной одним из удобных способов, например через мой телеграм-канал: <a href="https://t.me/aleksandr_numer" target="_blank" rel="noopener">https://t.me/aleksandr_numer</a>.</p>
+        <p><strong>Почему это важно:</strong> мои консультации – это не фиксированные шаблоны. Я адаптирую анализ под вашу ситуацию. Если вы просто пришлёте дату рождения без контекста – я всё равно смогу дать общую картину. Но если вы поделитесь своей историей – разбор получится более точным и практичным.</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <button class="faq-head" type="button">
+        <span class="faq-q">Консультируете ли вы людей, проживающих не в России?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-body">
+        <p>Да, я консультирую всех русскоговорящих жителей нашей планеты.</p>
+        <p>Оплата, как правило, происходит через сервис Boosty. Для этого вам потребуется быстрая регистрация на сервисе.</p>
+        <p><strong>Важно:</strong> в индивидуальном порядке можем обсудить и другие способы. Я всегда открыт к диалогу.</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <button class="faq-head" type="button">
+        <span class="faq-q">Вы можете составить натальную карту или матрицу судьбы?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-body">
+        <p>Нет. Я работаю строго по системе «Цифрового психоанализа Александрова».</p>
+        <p>Я не практикую астрологию, таро, ведическую нумерологию, сюцай, нумерологию таро и прочие эзотерические направления, так как отношусь к ним скептически или считаю их неуместными для использования в консультациях.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg) return;
+  try {
+    tg.ready();
+    tg.expand();
+    if (tg.setHeaderColor) tg.setHeaderColor('#F7F6F9');
+    if (tg.setBackgroundColor) tg.setBackgroundColor('#F7F6F9');
+    if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+  } catch (e) {}
+})();
+
+(function() {
+  "use strict";
+
+  var ONES_IMPORTANT = 'Характер – самая гибкая часть психоматрицы. Матрица не статична, она гибкая. Понимание этой гибкости и умение ею управлять – самый полезный и нужный инструмент, который даёт массу ответов на основные вопросы. Характер меняется под влиянием обстоятельств, окружения и собственного выбора. Восьмёрки придают пластичность, а переходы цифр показывают, как терпимость и властность сменяют друг друга. Поэтому перед нами не статичный портрет, а живой человек, способный меняться.';
+  var TWOS_IMPORTANT = 'Энергия – дело тонкое. С двойками тоже не всё так однозначно. Важно обратить внимание на четвёрки в психоматрице. Они отвечают за здоровье, за физический потенциал человека. Они способны компенсировать дефицит энергии: человек благодаря своей физической силе берёт силу из тела. И наоборот: при избытке энергии она может перейти в здоровье. Этот переход «22–4» делает картину живой и подвижной. Понимание этой гибкости и умение ею управлять – самый полезный инструмент, который даёт массу ответов на основные вопросы.';
+
+  var onesData = {
+    1: {
+      short: 'Одна единица – это слабый, безвольный характер, который активно маскируется под силу. Такой человек избегает принятия решений, старается переложить ответственность на других, но при этом отчаянно имитирует деятельность и волевые качества. Он всегда вступает в спор, причём предмет спора ему безразличен – важна только победа. Эгоизм проявляется в желании победить любой ценой, не замечая просьб и бед окружающих. Поспешных решений он не принимает, даёт многосложные ответы, которые можно трактовать по-разному, чтобы иметь возможность отказаться от своих слов.',
+      plus: 'В системе Александрова для характера «1» выраженные положительные качества не выделяются. Это один из самых сложных характеров, в котором безволие и эгоизм сочетаются с постоянной имитацией силы.',
+      minus: 'Безволие, эгоизм, склонность к спорам ради победы, избегание ответственности, имитация активности, нежелание принимать решения, многосложные ответы ради ухода от ответственности.',
+      nuances: 'Нельзя обвинять такого человека в безволии – он обидится и не поверит. В споре ему безразличен предмет, важна только победа. Он остро нуждается в успехе и признании, хотя внешне это может не показывать.',
+      rec: 'Если у вас или вашего ребёнка такой характер, важно приучать к принятию решений, не подавлять желание вести за собой, но и не позволять перекладывать ответственность. В разговоре используйте последовательность: согласие, предложение своего варианта, возврат ответственности, пауза, итог. Это помогает избежать споров и мягко подтолкнуть к самостоятельности. Полезно осознавать свои истинные желания и страхи, развивать навыки уверенного поведения и ответственности. Помогите найти сферу, где человек сможет проявить себя без страха ошибки.'
+    },
+    2: {
+      short: 'Две единицы дают мягкий, уступчивый характер. Такие люди очень любят похвалу и всячески её зарабатывают, много помогают другим, легко входят в любую компанию и умеют слушать, если на них не давят. Они редко используют давление, но им часто не хватает твёрдости в отстаивании своих взглядов. Стремятся к независимой профессии, однако похвала толкает их на поприще врача или учителя. Зачастую им не хватает целеустремлённости и самооценки, что занижает их цели. Если в психоматрице есть дополнительные двойки, инициатива резко активируется.',
+      plus: 'Мягкость, отзывчивость, коммуникабельность, умение слушать и слышать, эмпатия, способность создавать вокруг себя тёплую атмосферу.',
+      minus: 'Нетвёрдость в отстаивании взглядов, зависимость от похвалы, заниженная самооценка, склонность занижать цели, боязнь конфликтов.',
+      nuances: 'Если в матрице есть восьмёрки или пятёрки, такие люди не терпят лжи, потому что являются правдоискателями. Похвала для них – не просто приятность, а жизненная необходимость.',
+      rec: 'Главное для человека с таким характером – похвала. Ребёнку лучше давать одно задание и хвалить за каждый пункт отдельно. Не стоит захваливать, если есть восьмёрки или пятёрки – такие люди не терпят лжи. Помогите выстроить личные границы и научиться отстаивать свою точку зрения без агрессии, опираясь на сильные стороны – эмпатию и умение слушать. Полезно работать с самооценкой и обучаться навыкам уверенного поведения.'
+    },
+    3: {
+      short: 'Три единицы – это «золотая середина». Такие люди находят общий язык с любым человеком, могут уступить в споре даже самому безвольному собеседнику, но при необходимости способны победить любого деспота. Нельзя давить на такого человека: внешняя мягкость может обернуться неожиданным взрывом эмоций и резким переходом в деспотичный, агрессивный характер.',
+      plus: 'Гибкость, дипломатичность, терпимость, способность постоять за себя и других, умение находить компромиссы.',
+      minus: 'Склонность к накоплению обид, непредсказуемость при давлении, взрывной характер в ответ на подавление.',
+      nuances: 'Важно не допустить озлобления и мстительности. Если родители с детства подавляли ребёнка с таким характером, это ослабляет чувство долга и толкает к власти над собственным ребёнком. В жизни всё идёт по кругу: забыл о долге перед родителями – сам получишь ребёнка, который потеряет чувство долга к тебе.',
+      rec: 'Важно развивать эмоциональный интеллект, учиться распознавать моменты накопления обиды и вовремя экологично выражать чувства. Полезно работать с гневом, обучаться навыкам саморегуляции. Помогите найти баланс между уступчивостью и отстаиванием своих интересов.'
+    },
+    4: {
+      short: 'Четыре единицы – волевой и сильный характер. Люди умеют ставить цели, если есть энергия, в спорах не любят уступать, но не заходят за границы, так как не обладают деспотизмом и помнят о собеседнике. Для мужчин такой характер лучше всего подходит руководителям или военным. Это характер лидера, который желает быть лучше других. В спокойном состоянии они мягче, тоже любят похвалу, но не терпят подхалимства. Могут принимать решение сразу и редко от него отказываются.',
+      plus: 'Сила воли, целеустремлённость, лидерство, ответственность, способность принимать решения и вести за собой.',
+      minus: 'Жёсткость, нежелание уступать, склонность к доминированию, нетерпимость к слабости, иногда – излишняя прямолинейность.',
+      nuances: 'Никогда не обманывайте себя, что способны легко уступить лидерство другому, – это не так. Вы рождены со знаком лидера. Даже если не стали им по каким-то причинам, не допускайте унижения – это неприемлемо. Каждый человек унижен, и если не получилось лидерство в работе, есть шанс раскрыть талант, что поставит вас в число значительных фигур.',
+      rec: 'Научитесь бороться с ленью. Если не получилось лидерство в работе, найдите сферу, где ваш потенциал будет востребован, иначе рискуете стать тираном в семье или на нелюбимой работе. Помогите найти призвание, развивайте эмпатию и гибкость. Полезно обучаться навыкам конструктивного спора и принятия чужого мнения.'
+    },
+    5: {
+      short: 'Пять единиц – максимально выраженный характер власти. Человек продвигается к цели, не обращая внимания на окружающих (при условии, что нет восьмёрок). Таких людей справедливо называют деспотами. Неограниченная власть или никакой власти. Редко кто может остановиться, нет предела властным устремлениям. Это создаёт враждебное окружение. Итог любого деспота известен: он порождает преемника, который «наступит» на него самого. Единственный способ сохранить себя – уход от власти, так как у неё нет границ. Терпимость и поиск своего таланта – путь реализации. Можно быть непревзойдённым художником, поэтом, танцором, актёром. Когда есть лидерство, но нет жертв деспотизма. При таком характере человек должен уходить от власти. Он становится одновременно неактивным и взрывным при малейшем давлении. Только знание особенностей деспота спасёт от конфликта.',
+      plus: 'Огромная сила воли, способность вести за собой, харизма, умение добиваться поставленных целей.',
+      minus: 'Деспотизм, жестокость, неумение остановиться, враждебность, одиночество, саморазрушение.',
+      nuances: 'Труднее всего давать рекомендации тем, кто их никогда не выполняет из-за силы характера. Бегите от власти – это ваше падение и потери. Ищите себя в науке, искусстве, мастерстве. Раскрывайте свой талант. Если рядом человек с таким характером, у вас две возможности: не дать раскрыться деспоту или подчиниться.',
+      rec: 'Лучший совет деспоту: помнить, что рядом люди. Если в психоматрице много двоек и четвёрок, займитесь спортом – это направит энергию в азарт, желание быть первым. И ещё раз: уходите от власти. Показана работа с гневом, обучение навыкам саморегуляции и эмпатии.'
+    },
+    6: {
+      short: 'При дальнейшем увеличении количества единиц говорят о «перегрузке» деспота, что означает резкое изменение характера. Человек начинает бояться своего скрытого стремления к власти. По собственным запросам на власть он понимает, что никогда не сможет её иметь (царь, президент). Меньшие рубежи его почти не интересуют. Осознание невозможности получить полную власть приводит к полному отказу от неё. Свои скрытые планы такие люди могут открыть лишь в момент сильного опьянения. Они очень терпеливы, спокойны, взрывы эмоций происходят только после длительного накопления обид. Когда такой момент наступает, достаточно одного слова для выброса огромной накопленной энергии. Близким нужно знать об этом и стремиться высвобождать накапливающуюся обиду заранее, при меньшем её количестве. Целеустремлённость таких людей сильно занижена, как и самооценка. Выбор работы определяется не интересом, а степенью свободы, которую она даёт: не зависеть от начальства и вообще ни от кого.',
+      plus: 'Терпеливость, спокойствие, способность долго сдерживаться, стремление к свободе, независимость.',
+      minus: 'Скрытность, накопление обид, взрывной характер, заниженная самооценка, неспособность к лидерству, боязнь власти, чувство внутренней пустоты.',
+      nuances: 'Что можно посоветовать людям с перегруженным деспотизмом? Наберитесь терпения, но это самая простая и неудачная рекомендация. Лучше всего понять очевидную мысль: значимость человека для него и последующего времени определяется не титулом или положением в обществе, и уж тем более не материальным достатком. Талант – вот мера, которую определит история.',
+      rec: 'Если в вашей семье есть человек с перегруженным характером, помогите ему понять эту простую мысль, найдите в себе силы и желание раскрыть его талант и помочь в самосовершенствовании. Необходимо заметить его талант и внимательно оберегать от обид. Важно сместить фокус с внешней власти на внутреннюю реализацию, помочь найти творческое призвание. Полезно работать с обидами и обучаться экологичному выражению эмоций.'
+    }
+  };
+
+  var onesZeroData = {
+    short: 'В вашей психоматрице нет единиц. Трактовка характера в системе начинается с одной единицы — «1», которая описывает самый слабый, безвольный характер, активно маскирующийся под силу. Отсутствие единиц можно рассматривать как ещё более выраженную форму этой же тенденции.',
+    plus: 'Выраженные положительные качества в этой позиции не выделяются.',
+    minus: 'Крайняя степень безволия, избегание ответственности, имитация активности.',
+    nuances: 'Такому человеку особенно важно окружение, которое мягко, без давления помогает принимать решения и брать ответственность.',
+    rec: 'Опирайтесь на описание характера «1»: приучайте к принятию решений, не подавляйте желание вести за собой, но и не позволяйте перекладывать ответственность. Помогите найти сферу, где человек сможет проявить себя без страха ошибки.'
+  };
+
+  var twosData = {
+    0: {
+      short: 'Когда в психоматрице нет двоек, это говорит об очень слабой энергии. Такой человек вынужден подпитываться от других людей, хотя пугаться этого слова не стоит. При остром дефиците энергии каждый человек – даже тот, кто обычно отдаёт, – начинает искать, где взять силы. Это происходит в стрессе, ссоре, болезни, испуге или горе. Но люди с отсутствием двоек отличаются ленью в делах и учёбе, чрезмерной физической подвижностью, суетливостью и боязнью конфликтов. Они всегда стремятся не вмешиваться в ссору, но при этом очень любят быть её свидетелями. Им трудно раскрыть свои возможности из-за собственной лени, и свои цели они обычно занижают. Очень любят собак и не очень кошек, потому что собаки являются донорами, а кошки – вампирами в энергетике.',
+      plus: 'Выраженные положительные качества здесь не выделяются. Это состояние крайнего энергетического дефицита, которое требует постоянного восполнения извне.',
+      minus: 'Слабая энергия, лень, суетливость, боязнь конфликтов, заниженные цели, склонность к вампиризму, трудности в раскрытии способностей.',
+      nuances: 'Нельзя пугаться слова «вампир» – это не диагноз, а вынужденное состояние. Такой человек не злой, он просто ищет, где взять силы. Он остро нуждается в поддержке и понимании, хотя внешне может казаться безразличным.',
+      rec: 'Развивайте энергию. Вам помогут занятия, которые наполняют силами: похвала, добрые дела, творчество, общение с теми, кто вас поддерживает. Укрепляйте здоровье – это тоже даёт энергию. Если чувствуете, что сил мало, не тратьте их на конфликты и на работу, которая не приносит радости. Больше отдыхайте, бывайте на природе, занимайтесь дыхательными практиками и мягкими физическими упражнениями. И никогда не оставляйте без внимания склонность к алкоголю или наркотикам – они крадут последние силы.'
+    },
+    1: {
+      short: 'Одна двойка означает, что у человека дефицит энергии. Наличие при этом цифр 4 немного усилит её, но качества, присущие ослабленной энергии, не меняются. Такие люди обладают ленью, подвижностью, суетливостью. Единственное отличие состоит в том, что все эти качества проявляются выборочно, волнообразно: человек вдруг становится непоседой, ленив выборочно, как бы выбирая для себя «зоны лени», где он может позволить себе расслабиться и отдохнуть. Эти люди также избегают конфликтов, поскольку не любят тратить энергию на них. Довольно часто делают людям добро с целью вернуть затраченную энергию через похвалу, да ещё и с некоторой добавкой. Похвала, комплименты, лидерство, отличие от других – всё это свойственно таким людям. Их бедой может стать тяга к спиртному или наркотикам, именно поэтому не следует оставлять без внимания это пристрастие. В разговоре с другими людьми предпочитают говорить о себе или на темы, интересующие их, пытаясь при этом мягко уходить от «чужих» тем. Физический труд их мало привлекает, так как на это нет энергии.',
+      plus: 'Выраженные положительные качества здесь не выделяются. Это состояние энергетического дефицита с выборочными проявлениями активности.',
+      minus: 'Дефицит энергии, лень, суетливость, избегание конфликтов, склонность к спиртному и наркотикам, эгоцентризм в разговорах, слабость к физическому труду.',
+      nuances: 'Похвала для такого человека – не просто приятность, а способ восполнить энергию. Он может совершать добрые дела, чтобы получить похвалу и тем самым вернуть силы. Важно не оставлять без внимания его пристрастия.',
+      rec: 'Развивайте энергию через то, что вам интересно. Найдите занятие, которое приносит радость и наполняет силами. Помогают похвала со стороны людей, правильное питание и дыхание, упражнения цигун, йоги, ушу. Занимаясь совершенствованием своей энергии, запомните простое правило: прежде чем пытаться усилить свою энергию, необходимо научиться её сохранять и не тратить зря. Больше всего мы теряем энергию во время конфликтов, когда стремимся подавить другого человека, и когда выполняем ту работу, которая нам неинтересна.'
+    },
+    2: {
+      short: 'Две двойки – это норма, которая необходима каждому человеку. У такого человека хорошая энергия, наиболее благоприятная для контакта с людьми и для работы. Он общителен, легко входит в контакт с другими. Люди с такой энергией – хорошие рассказчики, лекторы и ораторы; это врачи по своей энергии. Можно ставить перед собой достаточно значительные цели, так как их можно достичь, ведь энергия позволяет это сделать. Люди с хорошей энергией не склонны к лени; если вы замечаете, что подобный человек ленится, то ищите причины не в энергетике, а в чём-то другом. При наличии в психоматрице цифр 4 можно пробовать себя в каком-либо мастерстве, связанном с работой руками. Такие люди могут выдержать монотонный и однообразный труд, если они не нашли своё призвание или по воле судьбы вынуждены заниматься монотонной работой. Если у вас при этом имеется много троек и столько же пятёрок, то вы прирождённый технарь и любая техника вам подвластна.',
+      plus: 'Хорошая энергия, общительность, способность ставить и достигать значительные цели, отсутствие склонности к лени, выносливость в монотонном труде, задатки оратора и врача.',
+      minus: 'Выраженные отрицательные качества здесь не выделяются. Это гармоничная норма, которая не создаёт проблем, если человек правильно распоряжается своей энергией.',
+      nuances: 'Профессия учителя рекомендуется только тем, у кого сильный характер, допустимо наличие цифры 8. Не стоит испытывать терпение человека с хорошей энергией, так как при необходимости он может пойти на конфликт ради отстаивания своих интересов.',
+      rec: 'Это самая оптимальная энергия, которая может подойти для любой другой энергии. Помните: человек, имеющий хорошую энергию, может ставить перед собой цели и достигать их. Развить в себе или в своём ребёнке целеустремлённость, поднять самооценку – это наиболее важное, если вы или ваш ребёнок обладаете такой энергией. Нельзя допустить разбазаривания этой ценной энергии, человек должен раскрыть свои возможности. Именно для этого ему и дана энергия.'
+    },
+    3: {
+      short: 'Три двойки означают, что вы обладаете знаком экстрасенса от рождения, или, проще говоря, вы – экстрасенс. Прежде чем вы начнёте «удивительные сеансы исцеления, гипноза, ясновидения…», разберитесь, что же такое экстрасенс. Ответ достаточно прост: экстрасенс – это тот, кто обладает особыми способностями, проявляющимися в зависимости от чрезвычайных обстоятельств. Именно наличие неожиданных обстоятельств приводит человека с подобным знаком к экстрасенсорике. В других случаях он мало отличается от того, у кого в психоматрице одна двойка. Все характеристики одной двойки присущи экстрасенсу: лень, подвижность, суетливость. Дополнительно появились и новые качества: замкнутость, нежелание делиться своими проблемами, взрыв эмоций при давлении со стороны, умение помочь другому человеку при необходимости. Именно по этим причинам многие экстрасенсы стремятся стать центром внимания, так как они интенсивно поглощают энергию от других и, только полностью «зарядившись», смогут отдать её другому, если посчитают нужным. Лучше всего искать работу, не связанную с людьми, так как из-за нестабильности энергии возможны осложнения в отношениях. Лучше всего подходят те профессии, где нет тяжёлого физического труда, но и с людьми контакт ограничен: водитель, архивы, склады, музеи и т. д.',
+      plus: 'Экстрасенсорные способности от рождения, умение помочь другому в трудную минуту, способность тонко чувствовать людей и ситуации.',
+      minus: 'Нестабильность энергии, лень, замкнутость, взрывной характер при давлении, стремление быть в центре внимания, трудности в постоянных контактах с людьми.',
+      nuances: 'Главное, что вам необходимо понять, – это особенности энергии экстрасенса. Она позволяет человеку ежедневно контролировать все свои органы, не допуская болезни. Экстрасенс болеет только тогда, когда он желает отдохнуть или его «уговорили» на эту болезнь. Таким людям нельзя подсовывать диагноз, их надо убеждать в абсолютном здоровье. Если же экстрасенс заявляет о приближающейся болезни, то ему необходимо просто отдохнуть без повода. Нельзя допускать никаких мыслей о болезни, иначе она будет вызвана самим экстрасенсом, который включит свою энергию на данную болезнь.',
+      rec: 'Необходимо знать, как лечит других экстрасенс. Его методы очень просты – это внимание, доброта, отзывчивость, ласка, когда он отдаёт всё это своему «пациенту». Не рассчитывайте, что это может длиться долго – не более 2 дней, а далее – всё те же замкнутость и вспыльчивость. Лучше всего искать работу, не связанную с людьми. Если работа связана с людьми, старайтесь ограничивать контакты и давать себе время для восстановления.'
+    },
+    4: {
+      short: 'Четыре или более двоек означают, что вы донор, человек, который имеет избыток энергии и может позволить себе тратить её по своему усмотрению. Появляется проблема с тем, чтобы правильно израсходовать имеющуюся энергию. Дело в том, что такие люди могут потратить энергию на просматривание любых телепрограмм, не делая при этом ничего для своего развития, – это можно назвать ленью, но уже от избытка энергии. Иногда может появиться чрезмерное спокойствие, граничащее с безразличием ко всему. Лучше всего попробовать свои силы в спорте, медицине, учительстве или физическом труде – всё это требует большой отдачи энергии и лучше всего подходит донорам. Если они не истратят свою энергию, то может возникнуть потребность в конфликте, который «разрядит» донора и принесёт ему облегчение. Думаю, что это не лучший способ избавления от лишней энергии. Избыточную энергию хорошо потребляют кошки (именно кошки, а не коты, так как кот может впитать гораздо меньшее количество энергии). Если в вашей психоматрице есть ещё цифры 4, то можно пробовать себя в профессиональном спорте. При достаточном количестве 5 и 9 (по две и более) можно заняться наукой. Если вы имеете знак «66», то попробуйте найти своё ремесло там, где сможете раскрыть себя как Мастер. Большое количество двоек даёт людям физическую силу, им полезен спорт (армия или милиция для мужчин).',
+      plus: 'Избыток энергии, физическая сила, выносливость, способность отдавать энергию другим, хорошие задатки для спорта, медицины, учительства, физического труда.',
+      minus: 'Лень от избытка энергии, чрезмерное спокойствие, безразличие, склонность к конфликтам для разрядки, раздражительность, упрямство, возможные болезни от неуправляемой энергии.',
+      nuances: 'Если вы получили от природы такой щедрый подарок, как сильная энергия, то потрудитесь её использовать с пользой для себя и для других. Главное, что вам необходимо сделать, – это поставить перед собой цели и начать продвижение вперёд. Не следует забывать, что та энергия, которую вы не сможете истратить, не даст вам ничего хорошего, кроме раздражительности, иногда упрямства. Вам дано сильное здоровье, которое опирается на вашу энергию, и именно поэтому болезнь для донора далеко не норма, а скорее неожиданность. Необходимо сразу же выявить причины столь необычного для донора явления. Как правило, это порча (если болезнь наступила вдруг, неожиданно), возможно появление болезни из-за потери чувства долга по отношению к родителям, когда человек наказан болезнью. И последняя причина болезни – неумение управлять своей энергией и использовать её.',
+      rec: 'Если вы получили от природы такой щедрый подарок, как сильная энергия, то потрудитесь её использовать с пользой для себя и для других. Главное, что вам необходимо сделать, – это поставить перед собой цели и начать продвижение вперёд. Не следует забывать, что та энергия, которую вы не сможете истратить, не даст вам ничего хорошего, кроме раздражительности, иногда упрямства. Вам дано сильное здоровье, которое опирается на вашу энергию, и именно поэтому болезнь для донора далеко не норма, а скорее неожиданность. Необходимо сразу же выявить причины столь необычного для донора явления. Как правило, это порча (если болезнь наступила вдруг, неожиданно), возможно появление болезни из-за потери чувства долга по отношению к родителям, когда человек наказан болезнью. И последняя причина болезни – неумение управлять своей энергией и использовать её.'
+    }
+  };
+
+  function sumDigits(n) {
+    if (n === undefined || n === null) return 0;
+    var s = String(Math.abs(n));
+    var t = 0;
+    for (var i = 0; i < s.length; i++) t += parseInt(s.charAt(i), 10);
+    return t;
+  }
+
+  function getFirstDigit(s) {
+    if (!s) return 0;
+    return parseInt(s.charAt(0), 10);
+  }
+
+  function parseDate(str) {
+    var clean = str.replace(/[^0-9]/g, '');
+    if (clean.length !== 8) return null;
+    return {
+      day: parseInt(clean.substring(0, 2), 10),
+      month: parseInt(clean.substring(2, 4), 10),
+      year: parseInt(clean.substring(4, 8), 10)
+    };
+  }
+
+  function calcNumbers(d, m, y) {
+    var sum = sumDigits(d) + sumDigits(m) + sumDigits(y);
+    var first = sum;
+    var second = sumDigits(first);
+    var ds = String(d) + String(m) + String(y);
+    var fd = getFirstDigit(ds);
+    var third = first - 2 * fd;
+    var fourth = sumDigits(third);
+    return { first: first, second: second, third: third, fourth: fourth };
+  }
+
+  function getCounts(d, m, y, extra) {
+    var c = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+    function add(n) {
+      if (n === undefined || n === null || isNaN(n)) return;
+      var s = String(Math.abs(n));
+      for (var i = 0; i < s.length; i++) {
+        var dig = parseInt(s.charAt(i), 10);
+        if (!isNaN(dig)) c[dig] = (c[dig] || 0) + 1;
+      }
+    }
+    add(d); add(m); add(y);
+    add(extra.first); add(extra.second); add(extra.third); add(extra.fourth);
+    return c;
+  }
+
+  function renderCount(c, digit) {
+    var v = c[digit] || 0;
+    return v === 0 ? '—' : String(digit).repeat(v);
+  }
+
+  function getOnesData(count) {
+    if (count <= 0) return onesZeroData;
+    if (count >= 6) return onesData[6];
+    return onesData[count];
+  }
+
+  function getTwosData(count) {
+    if (count <= 0) return twosData[0];
+    if (count >= 4) return twosData[4];
+    return twosData[count];
+  }
+
+  function onesTitle(count) {
+    if (count <= 0) return 'Характер «0» (единицы отсутствуют)';
+    if (count >= 6) return 'Характер «111111 и более»';
+    return 'Характер «' + new Array(count + 1).join('1') + '»';
+  }
+
+  function twosTitle(count) {
+    if (count <= 0) return 'Отсутствие двоек';
+    if (count >= 4) return 'Энергия «2222 и более»';
+    return 'Энергия «' + new Array(count + 1).join('2') + '»';
+  }
+
+  function renderAnalysisBlock(digitsId, textId, title, data, important) {
+    var header = document.getElementById(digitsId);
+    var textBlock = document.getElementById(textId);
+    if (!header || !textBlock || !data) return;
+
+    header.textContent = title;
+
+    var html = '';
+    html += '<p class="short-desc">' + data.short + '</p>';
+    html += '<button class="toggle-btn" type="button">Подробнее ▼</button>';
+    html += '<div class="full-desc">';
+    html += '<p><strong>Плюсы:</strong> ' + data.plus + '</p>';
+    html += '<p><strong>Минусы:</strong> ' + data.minus + '</p>';
+    html += '<p><strong>Нюансы:</strong> ' + data.nuances + '</p>';
+    html += '<p><strong>Рекомендации:</strong> ' + data.rec + '</p>';
+    html += '<p><strong>Важно:</strong> ' + important + '</p>';
+    html += '</div>';
+
+    textBlock.innerHTML = html;
+
+    var btn = textBlock.querySelector('.toggle-btn');
+    var full = textBlock.querySelector('.full-desc');
+    if (btn && full) {
+      btn.addEventListener('click', function() {
+        if (full.classList.contains('open')) {
+          full.classList.remove('open');
+          btn.innerHTML = 'Подробнее ▼';
+        } else {
+          full.classList.add('open');
+          btn.innerHTML = 'Подробнее ▲';
+        }
+      });
+    }
+  }
+
+  function calculate() {
+    var inp = document.getElementById('c-date');
+    var res = document.getElementById('c-result');
+    var desc = document.getElementById('c-descriptions');
+    var note = document.getElementById('c-partial-note');
+
+    if (!inp || !res || !desc) return;
+
+    var ds = inp.value.trim();
+    var parsed = parseDate(ds);
+    if (!parsed) {
+      alert('Введите дату в формате ДД.ММ.ГГГГ (например, 15.04.1972)');
+      return;
+    }
+
+    var d = parsed.day, m = parsed.month, y = parsed.year;
+    try {
+      var extra = calcNumbers(d, m, y);
+      var cnt = getCounts(d, m, y, extra);
+
+      var absThird = Math.abs(extra.third);
+      var absFourth = Math.abs(extra.fourth);
+      var extraStr = extra.first + '-' + extra.second + '-' + absThird + '-' + absFourth;
+      document.getElementById('c-extra-digits').textContent = extraStr;
+
+      for (var i = 1; i <= 9; i++) {
+        var cell = document.getElementById('c-' + i);
+        if (!cell) continue;
+        var disp = renderCount(cnt, i);
+        var sp = cell.querySelector('.digit');
+        if (sp) sp.textContent = disp;
+        if (disp === '—') cell.classList.add('empty');
+        else cell.classList.remove('empty');
+      }
+
+      var onesCount = cnt[1] || 0;
+      renderAnalysisBlock('c-ones-digits', 'c-ones-text', onesTitle(onesCount), getOnesData(onesCount), ONES_IMPORTANT);
+
+      var twosCount = cnt[2] || 0;
+      renderAnalysisBlock('c-twos-digits', 'c-twos-text', twosTitle(twosCount), getTwosData(twosCount), TWOS_IMPORTANT);
+
+      res.classList.add('show');
+      desc.classList.add('show');
+      if (note) note.classList.add('show');
+
+    } catch (e) {
+      alert('Ошибка: ' + e.message);
+      console.error(e);
+    }
+  }
+
+  function initInput() {
+    var inp = document.getElementById('c-date');
+    if (!inp) return;
+    inp.addEventListener('input', function() {
+      var v = this.value.replace(/[^0-9]/g, '');
+      var f = '';
+      if (v.length > 0) f += v.substring(0, 2);
+      if (v.length >= 3) f += '.' + v.substring(2, 4);
+      if (v.length >= 5) f += '.' + v.substring(4, 8);
+      this.value = f;
+    });
+    inp.addEventListener('keydown', function(e) {
+      var allow = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
+      if (allow.includes(e.key)) return;
+      if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+    });
+  }
+
+  function initFaq() {
+    var heads = document.querySelectorAll('.cpa-final .faq .faq-head');
+    if (!heads || heads.length === 0) return;
+    for (var i = 0; i < heads.length; i++) {
+      heads[i].addEventListener('click', function() {
+        var item = this.closest('.item');
+        if (!item) return;
+        if (item.classList.contains('open')) item.classList.remove('open');
+        else item.classList.add('open');
+      });
+    }
+  }
+
+  function initConsultations() {
+    var cards = document.querySelectorAll('.cpa-final .consultations .consult-card');
+    if (!cards || cards.length === 0) return;
+    for (var i = 0; i < cards.length; i++) {
+      (function(card) {
+        var head = card.querySelector('.consult-head');
+        if (!head) return;
+        head.addEventListener('click', function() {
+          if (card.classList.contains('open')) card.classList.remove('open');
+          else card.classList.add('open');
+        });
+      })(cards[i]);
+    }
+  }
+
+  function init() {
+    initInput();
+    initFaq();
+    initConsultations();
+    var btn = document.getElementById('c-calc-btn');
+    if (btn) btn.addEventListener('click', calculate);
+    setTimeout(calculate, 100);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
